@@ -1,0 +1,541 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MoleculeLab | Abhay Raj</title>
+
+<style>
+:root {
+  --bg: #10121c;
+  --panel: #191d2b;
+  --panel2: #202638;
+  --purple: #a78bfa;
+  --teal: #5eead4;
+  --text: #f4f5ff;
+  --muted: #a6aec5;
+  --border: #30374c;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+.layout { display: flex; min-height: 100vh; }
+.sidebar {
+  width: 275px;
+  flex-shrink: 0;
+  padding: 25px 19px;
+  background: #171a28;
+  border-right: 1px solid var(--border);
+}
+.logo { font-size: 25px; font-weight: 800; margin-bottom: 9px; }
+.logo span { color: var(--teal); }
+.tagline { color: var(--muted); font-size: 12px; margin-bottom: 30px; }
+.section-label {
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin: 24px 0 12px;
+}
+.nav-btn {
+  display: block; width: 100%; text-align: left;
+  padding: 12px; border: 0; border-radius: 9px;
+  background: transparent; color: #c9cde0; margin: 4px 0;
+}
+.nav-btn.active, .nav-btn:hover {
+  color: white;
+  background: linear-gradient(90deg, #513b8d, #263f56);
+}
+.student {
+  padding: 14px; background: var(--panel);
+  border: 1px solid var(--border); border-radius: 12px;
+  line-height: 1.8; font-size: 13px; overflow-wrap: anywhere;
+}
+.student strong { color: var(--teal); }
+.student .reg { font-size: 12px; color: var(--muted); }
+.main { min-width: 0; flex: 1; padding: 30px; }
+.topbar {
+  display: flex; justify-content: space-between;
+  align-items: center; gap: 15px; margin-bottom: 30px;
+}
+.pill {
+  display: inline-block; color: var(--teal);
+  background: #173a3b; padding: 8px 12px;
+  border-radius: 30px; font-size: 12px;
+}
+h1 { font-size: clamp(27px, 4vw, 42px); margin: 0 0 12px; }
+h2 { font-size: 22px; margin-top: 0; }
+h3 { margin-top: 0; }
+p { line-height: 1.65; }
+.muted { color: var(--muted); }
+.hero {
+  padding: 32px; border-radius: 18px; margin-bottom: 22px;
+  background: radial-gradient(ellipse at top right, #3c2869, transparent 60%),
+              linear-gradient(135deg, #202638, #172d36);
+  border: 1px solid #383b5c;
+}
+.hero p { color: #c3c9de; max-width: 700px; }
+.hero-tags { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 20px; }
+.hero-tags span {
+  padding: 8px 12px; border-radius: 8px;
+  background: #272e43; color: var(--teal); font-size: 12px;
+}
+.stats {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px; margin-bottom: 24px;
+}
+.stat, .card {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 14px; padding: 19px;
+}
+.stat small { color: var(--muted); display: block; margin-bottom: 10px; }
+.stat strong { font-size: 25px; color: var(--teal); }
+.toolbar {
+  display: flex; flex-wrap: wrap; gap: 12px; margin: 18px 0;
+}
+input, select {
+  color: white; background: var(--panel2);
+  border: 1px solid var(--border); border-radius: 9px;
+  padding: 13px; outline: none;
+}
+input:focus, select:focus { border-color: var(--teal); }
+#search { flex: 1; min-width: 220px; }
+select { min-width: 175px; }
+.btn {
+  border: 0; border-radius: 9px; padding: 12px 16px;
+  background: var(--purple); color: #171329; font-weight: 700;
+}
+.btn.secondary {
+  color: var(--text); background: var(--panel2);
+  border: 1px solid var(--border);
+}
+.btn:hover { filter: brightness(1.12); }
+.molecule-grid {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+}
+.molecule-card {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 13px; overflow: hidden; cursor: pointer;
+  transition: transform .18s, border-color .18s;
+}
+.molecule-card:hover { transform: translateY(-3px); border-color: var(--teal); }
+.molecule-card img {
+  display: block; width: 100%; height: 155px;
+  object-fit: contain; background: #fff; padding: 10px;
+}
+.molecule-card .info { padding: 15px; }
+.molecule-card h3 { margin-bottom: 7px; }
+.category {
+  display: inline-block; font-size: 11px;
+  padding: 5px 8px; border-radius: 20px;
+  background: #302650; color: #c4b5fd; margin-bottom: 10px;
+}
+.formula { color: var(--teal); font-weight: 700; }
+.small-text { font-size: 12px; color: var(--muted); }
+.hidden { display: none !important; }
+.detail-grid {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 18px; margin-top: 20px;
+}
+.structure-image {
+  width: 100%; height: 320px; object-fit: contain;
+  background: white; border-radius: 10px; padding: 12px;
+}
+.property-grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px; margin-top: 14px;
+}
+.property {
+  padding: 13px; background: var(--panel2);
+  border-radius: 9px; min-width: 0;
+}
+.property small { display: block; color: var(--muted); margin-bottom: 8px; }
+.property strong { overflow-wrap: anywhere; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+th { color: var(--teal); background: var(--panel2); }
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
+.status { color: var(--teal); font-size: 13px; margin: 10px 0; }
+footer {
+  text-align: center; color: var(--muted);
+  font-size: 12px; padding: 30px 10px;
+}
+#toast {
+  position: fixed; bottom: 20px; right: 20px;
+  background: #17483f; color: white; padding: 12px 16px;
+  border-radius: 9px; display: none;
+}
+@media (max-width: 1100px) {
+  .molecule-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 750px) {
+  .layout { display: block; }
+  .sidebar { width: 100%; border-right: 0; border-bottom: 1px solid var(--border); }
+  .main { padding: 18px; }
+  .molecule-grid, .detail-grid { grid-template-columns: 1fr; }
+  .hero { padding: 22px; }
+}
+</style>
+</head>
+
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="logo">⚗ Molecule<span>Lab</span></div>
+    <div class="tagline">CHEMISTRY EXPLORATION PLATFORM</div>
+
+    <div class="section-label">Workspace</div>
+    <button class="nav-btn active" data-page="home">⌂ Dashboard</button>
+    <button class="nav-btn" data-page="library">⚛ Compound Library</button>
+    <button class="nav-btn" data-page="compare">⇄ Compare Compounds</button>
+    <button class="nav-btn" data-page="report">▤ Student Report</button>
+
+    <div class="section-label">Student information</div>
+    <div class="student">
+      <div>Student name</div>
+      <strong>ABHAY RAJ</strong>
+      <div style="margin-top:10px">Course</div>
+      <strong>B.Tech CSE (AI/ML)</strong>
+      <div>Section C</div>
+      <div style="margin-top:10px">Registration number</div>
+      <div class="reg">RA2611026050168</div>
+      <div style="margin-top:10px">Institution</div>
+      <div>SRM Institute of Science and Technology, Tiruchirappalli</div>
+    </div>
+
+    <div class="section-label">Quick information</div>
+    <div class="student">
+      <strong>Learn by exploring</strong>
+      <p class="muted">SMILES · Molecular structures · Chemical properties · Drug molecules</p>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="muted">PERSONAL CHEMISTRY WORKSPACE</div>
+      <span class="pill">● SYSTEM READY</span>
+    </div>
+
+    <section id="page-home">
+      <div class="hero">
+        <span class="pill">MOLECULAR SCIENCE / 01</span>
+        <h1>Explore the world of<br><span style="color:var(--teal)">molecules.</span></h1>
+        <p>A personal chemistry laboratory to explore carbon compounds, common medicines, molecular structures, and important chemical properties.</p>
+        <div class="hero-tags">
+          <span>2D Structures</span><span>Compound Search</span>
+          <span>Property Analysis</span><span>Drug Chemistry</span>
+        </div>
+        <div style="margin-top:24px">
+          <button class="btn" onclick="showPage('library')">Explore compounds →</button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><small>Compound library</small><strong id="stat-count">25</strong></div>
+        <div class="stat"><small>Drug molecules</small><strong id="stat-drugs">12</strong></div>
+        <div class="stat"><small>Carbon compounds</small><strong id="stat-carbon">13</strong></div>
+        <div class="stat"><small>Student</small><strong style="font-size:19px">ABHAY</strong></div>
+      </div>
+
+      <h2>Featured compounds</h2>
+      <p class="muted">Select any molecule to view its structure and properties.</p>
+      <div id="featured" class="molecule-grid"></div>
+      <div style="margin-top:20px"><button class="btn secondary" onclick="showPage('library')">View all compounds →</button></div>
+    </section>
+
+    <section id="page-library" class="hidden">
+      <h1>Compound library</h1>
+      <p class="muted">Search by molecule name, formula, SMILES, or category.</p>
+      <div class="toolbar">
+        <input id="search" placeholder="Search paracetamol, caffeine, C6H6..." aria-label="Search compounds">
+        <select id="category-filter" aria-label="Filter by category">
+          <option value="All">All compounds</option>
+          <option value="Carbon compound">Carbon compounds</option>
+          <option value="Drug">Drug molecules</option>
+        </select>
+      </div>
+      <div id="results-count" class="status"></div>
+      <div id="library-grid" class="molecule-grid"></div>
+    </section>
+
+    <section id="page-detail" class="hidden">
+      <button class="btn secondary" onclick="showPage('library')">← Back to library</button>
+      <div style="margin-top:25px">
+        <span id="detail-category" class="category"></span>
+        <h1 id="detail-name"></h1>
+        <p id="detail-description" class="muted"></p>
+      </div>
+      <div class="detail-grid">
+        <div class="card">
+          <h2>2D Molecular Structure</h2>
+          <img id="detail-image" class="structure-image" alt="2D molecular structure">
+          <p class="small-text">Structure image supplied by PubChem. An internet connection is required.</p>
+          <h3>SMILES notation</h3>
+          <div id="detail-smiles" style="overflow-wrap:anywhere;color:var(--teal)"></div>
+          <button class="btn secondary" style="margin-top:12px" onclick="copySmiles()">Copy SMILES</button>
+        </div>
+        <div class="card">
+          <h2>Molecular information</h2>
+          <div class="property-grid" id="detail-properties"></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:18px">
+        <h2>Compound property report</h2>
+        <div class="table-wrap"><table><tbody id="detail-table"></tbody></table></div>
+        <button class="btn" style="margin-top:16px" onclick="downloadCurrent()">Download compound CSV</button>
+      </div>
+    </section>
+
+    <section id="page-compare" class="hidden">
+      <h1>Compare compounds</h1>
+      <p class="muted">Choose two or more molecules to compare their recorded properties.</p>
+      <div class="toolbar">
+        <select id="compare-a" aria-label="First molecule"></select>
+        <select id="compare-b" aria-label="Second molecule"></select>
+        <button class="btn" onclick="compareMolecules()">Compare</button>
+      </div>
+      <div id="compare-output"></div>
+      <button class="btn secondary" style="margin-top:16px" onclick="downloadComparison()">Download comparison CSV</button>
+    </section>
+
+    <section id="page-report" class="hidden">
+      <h1>Student project report</h1>
+      <p class="muted">Personalized summary for your chemistry exploration project.</p>
+      <div class="card">
+        <h2>Student details</h2>
+        <div class="table-wrap"><table><tbody>
+          <tr><th>Name</th><td>ABHAY RAJ</td></tr>
+          <tr><th>Course</th><td>B.Tech CSE (AI/ML), Section C</td></tr>
+          <tr><th>Registration number</th><td>RA2611026050168</td></tr>
+          <tr><th>Institution</th><td>SRM Institute of Science and Technology, Tiruchirappalli</td></tr>
+          <tr><th>Project</th><td>Interactive Molecular Exploration Laboratory</td></tr>
+        </tbody></table></div>
+      </div>
+      <div class="card" style="margin-top:18px">
+        <h2>Project overview</h2>
+        <p>This website provides an interactive way to explore selected organic compounds and common drug molecules. It displays molecular structures and selected physicochemical descriptors to support introductory chemistry and cheminformatics learning.</p>
+        <p class="muted">Note: the library is a selected collection, not an exhaustive list of every known carbon compound. Property values are reference estimates and should be checked against a trusted chemical database for formal academic work.</p>
+        <button class="btn" onclick="downloadStudentReport()">Download student report (TXT)</button>
+      </div>
+    </section>
+
+    <footer>
+      MoleculeLab · Personal educational project by ABHAY RAJ<br>
+      Molecular structure images: PubChem · For educational use
+    </footer>
+  </main>
+</div>
+<div id="toast"></div>
+
+<script>
+// Selected educational dataset. Descriptor values are approximate reference values.
+const compounds = [
+ {name:"Ethanol",formula:"C2H6O",mw:46.07,logp:-0.00,tpsa:20.23,hbd:1,hba:1,rot:0,rings:0,smiles:"CCO",category:"Carbon compound",desc:"An alcohol used in laboratories, solvents, and disinfectants."},
+ {name:"Methane",formula:"CH4",mw:16.04,logp:1.09,tpsa:0,hbd:0,hba:0,rot:0,rings:0,smiles:"C",category:"Carbon compound",desc:"The simplest hydrocarbon and a major component of natural gas."},
+ {name:"Ethane",formula:"C2H6",mw:30.07,logp:1.03,tpsa:0,hbd:0,hba:0,rot:0,rings:0,smiles:"CC",category:"Carbon compound",desc:"A saturated hydrocarbon with two carbon atoms."},
+ {name:"Propane",formula:"C3H8",mw:44.10,logp:1.81,tpsa:0,hbd:0,hba:0,rot:1,rings:0,smiles:"CCC",category:"Carbon compound",desc:"A three-carbon alkane used as a fuel."},
+ {name:"Butane",formula:"C4H10",mw:58.12,logp:2.89,tpsa:0,hbd:0,hba:0,rot:2,rings:0,smiles:"CCCC",category:"Carbon compound",desc:"A four-carbon alkane commonly used in fuel mixtures."},
+ {name:"Ethene",formula:"C2H4",mw:28.05,logp:1.35,tpsa:0,hbd:0,hba:0,rot:0,rings:0,smiles:"C=C",category:"Carbon compound",desc:"An alkene used in polymer manufacture."},
+ {name:"Ethyne",formula:"C2H2",mw:26.04,logp:0.00,tpsa:0,hbd:0,hba:0,rot:0,rings:0,smiles:"C#C",category:"Carbon compound",desc:"A simple alkyne also known as acetylene."},
+ {name:"Benzene",formula:"C6H6",mw:78.11,logp:2.13,tpsa:0,hbd:0,hba:0,rot:0,rings:1,smiles:"c1ccccc1",category:"Carbon compound",desc:"An aromatic hydrocarbon with a six-membered ring."},
+ {name:"Toluene",formula:"C7H8",mw:92.14,logp:2.73,tpsa:0,hbd:0,hba:0,rot:0,rings:1,smiles:"Cc1ccccc1",category:"Carbon compound",desc:"An aromatic solvent used in industrial chemistry."},
+ {name:"Phenol",formula:"C6H6O",mw:94.11,logp:1.46,tpsa:20.23,hbd:1,hba:1,rot:0,rings:1,smiles:"Oc1ccccc1",category:"Carbon compound",desc:"An aromatic compound containing a hydroxyl group."},
+ {name:"Acetic Acid",formula:"C2H4O2",mw:60.05,logp:-0.17,tpsa:37.30,hbd:1,hba:1,rot:0,rings:0,smiles:"CC(=O)O",category:"Carbon compound",desc:"The acid responsible for the characteristic sourness of vinegar."},
+ {name:"Acetone",formula:"C3H6O",mw:58.08,logp:-0.24,tpsa:17.07,hbd:0,hba:1,rot:0,rings:0,smiles:"CC(=O)C",category:"Carbon compound",desc:"A common ketone used as a solvent."},
+ {name:"Formaldehyde",formula:"CH2O",mw:30.03,logp:0.35,tpsa:17.07,hbd:0,hba:1,rot:0,rings:0,smiles:"C=O",category:"Carbon compound",desc:"A simple aldehyde used in chemical manufacturing."},
+ {name:"Glycerol",formula:"C3H8O3",mw:92.09,logp:-1.76,tpsa:60.69,hbd:3,hba:3,rot:2,rings:0,smiles:"C(C(CO)O)O",category:"Carbon compound",desc:"A three-carbon polyol used in many formulations."},
+ {name:"Glucose",formula:"C6H12O6",mw:180.16,logp:-3.24,tpsa:110.38,hbd:5,hba:6,rot:5,rings:1,smiles:"C([C@@H]1[C@H]([C@@H]([C@H](C(O1)O)O)O)O)O",category:"Carbon compound",desc:"A simple sugar important in cellular energy metabolism."},
+ {name:"Urea",formula:"CH4N2O",mw:60.06,logp:-1.59,tpsa:69.11,hbd:2,hba:1,rot:0,rings:0,smiles:"NC(=O)N",category:"Carbon compound",desc:"An organic compound used in fertilizers and skin-care products."},
+ {name:"Aspirin",formula:"C9H8O4",mw:180.16,logp:1.19,tpsa:63.60,hbd:1,hba:4,rot:3,rings:1,smiles:"CC(=O)Oc1ccccc1C(=O)O",category:"Drug",desc:"Acetylsalicylic acid, a medicine used for pain and inflammation."},
+ {name:"Paracetamol (PCM)",formula:"C8H9NO2",mw:151.16,logp:0.46,tpsa:49.33,hbd:2,hba:2,rot:1,rings:1,smiles:"CC(=O)NC1=CC=C(C=C1)O",category:"Drug",desc:"Also called acetaminophen; used to relieve pain and reduce fever."},
+ {name:"Caffeine",formula:"C8H10N4O2",mw:194.19,logp:-0.07,tpsa:58.44,hbd:0,hba:3,rot:0,rings:2,smiles:"Cn1c(=O)c2c(ncn2C)n(C)c1=O",category:"Drug",desc:"A stimulant found in coffee, tea, and several beverages."},
+ {name:"Ibuprofen",formula:"C13H18O2",mw:206.28,logp:3.97,tpsa:37.30,hbd:1,hba:2,rot:4,rings:1,smiles:"CC(C)CC1=CC=C(C=C1)C(C)C(=O)O",category:"Drug",desc:"A nonsteroidal anti-inflammatory medicine used for pain and inflammation."},
+ {name:"Naproxen",formula:"C14H14O3",mw:230.26,logp:3.18,tpsa:46.53,hbd:1,hba:3,rot:3,rings:2,smiles:"COc1ccc2cc(ccc2c1)C(C)C(=O)O",category:"Drug",desc:"A nonsteroidal anti-inflammatory medicine."},
+ {name:"Amoxicillin",formula:"C16H19N3O5S",mw:365.40,logp:0.87,tpsa:158.00,hbd:4,hba:7,rot:4,rings:2,smiles:"CC1(C)S[C@@H]2[C@H](NC(=O)[C@@H](N)c3ccc(O)cc3)C(=O)N2[C@@H]1C(=O)O",category:"Drug",desc:"A penicillin-class antibiotic prescribed for certain bacterial infections."},
+ {name:"Metformin",formula:"C4H11N5",mw:129.16,logp:-1.43,tpsa:91.50,hbd:3,hba:5,rot:1,rings:0,smiles:"CN(C)C(=N)NC(=N)N",category:"Drug",desc:"A medicine commonly prescribed for type 2 diabetes."},
+ {name:"Cetirizine",formula:"C21H25ClN2O3",mw:388.89,logp:1.70,tpsa:52.00,hbd:1,hba:5,rot:6,rings:2,smiles:"O=C(O)COCCN1CCN(CC1)C(c1ccccc1)c1ccc(Cl)cc1",category:"Drug",desc:"An antihistamine used to relieve allergy symptoms."},
+ {name:"Lidocaine",formula:"C14H22N2O",mw:234.34,logp:2.44,tpsa:32.34,hbd:1,hba:2,rot:5,rings:1,smiles:"CCN(CC)CC(=O)NC1=C(C)C=CC=C1C",category:"Drug",desc:"A local anesthetic used in specific medical settings."}
+];
+
+const propertyLabels = [
+ ["Molecular formula","formula"],["Molecular weight (g/mol)","mw"],
+ ["LogP (estimated)","logp"],["TPSA (Å²)","tpsa"],
+ ["H-bond donors","hbd"],["H-bond acceptors","hba"],
+ ["Rotatable bonds","rot"],["Ring count","rings"],["SMILES","smiles"]
+];
+let currentCompound = compounds[0];
+let lastComparison = [];
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, ch => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[ch]));
+}
+function structureURL(name, size="large") {
+  return "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/" +
+    encodeURIComponent(name.replace(" (PCM)","")) +
+    "/PNG?image_size=" + size;
+}
+function showPage(page) {
+  document.querySelectorAll("main section[id^='page-']").forEach(s => s.classList.add("hidden"));
+  const target = document.getElementById("page-" + page);
+  if (target) target.classList.remove("hidden");
+  document.querySelectorAll(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.page === page));
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll(".nav-btn").forEach(button => {
+  button.addEventListener("click", () => showPage(button.dataset.page));
+});
+
+function cardHTML(c) {
+  return `<article class="molecule-card" tabindex="0" role="button"
+    aria-label="Open ${escapeHTML(c.name)}"
+    onclick="openCompound('${escapeHTML(c.name)}')"
+    onkeydown="if(event.key==='Enter')openCompound('${escapeHTML(c.name)}')">
+    <img loading="lazy" src="${structureURL(c.name,'small')}"
+      alt="Structure of ${escapeHTML(c.name)}"
+      onerror="this.alt='Structure image unavailable';this.style.opacity='.25'">
+    <div class="info">
+      <span class="category">${escapeHTML(c.category)}</span>
+      <h3>${escapeHTML(c.name)}</h3>
+      <p class="formula">${escapeHTML(c.formula)}</p>
+      <div class="small-text">Molecular weight: ${c.mw} g/mol</div>
+      <div class="small-text">LogP: ${c.logp} · TPSA: ${c.tpsa} Å²</div>
+    </div>
+  </article>`;
+}
+function renderFeatured() {
+  document.getElementById("featured").innerHTML =
+    [compounds[17],compounds[18],compounds[16]].map(cardHTML).join("");
+}
+function renderLibrary() {
+  const q = document.getElementById("search").value.trim().toLowerCase();
+  const category = document.getElementById("category-filter").value;
+  const filtered = compounds.filter(c => {
+    const matches = [c.name,c.formula,c.smiles,c.category,c.desc].join(" ").toLowerCase().includes(q);
+    return matches && (category === "All" || c.category === category);
+  });
+  document.getElementById("results-count").textContent =
+    `${filtered.length} compound(s) found`;
+  document.getElementById("library-grid").innerHTML = filtered.length
+    ? filtered.map(cardHTML).join("")
+    : `<div class="card">No compounds found. Try another search.</div>`;
+}
+document.getElementById("search").addEventListener("input", renderLibrary);
+document.getElementById("category-filter").addEventListener("change", renderLibrary);
+
+function openCompound(name) {
+  currentCompound = compounds.find(c => c.name === name);
+  if (!currentCompound) return;
+  const c = currentCompound;
+  document.getElementById("detail-name").textContent = c.name;
+  document.getElementById("detail-category").textContent = c.category;
+  document.getElementById("detail-description").textContent = c.desc;
+  document.getElementById("detail-image").src = structureURL(c.name,"large");
+  document.getElementById("detail-image").alt = "2D structure of " + c.name;
+  document.getElementById("detail-smiles").textContent = c.smiles;
+
+  document.getElementById("detail-properties").innerHTML = propertyLabels
+    .filter(([label]) => label !== "SMILES")
+    .map(([label,key]) => `<div class="property"><small>${label}</small><strong>${escapeHTML(c[key])}</strong></div>`).join("");
+
+  document.getElementById("detail-table").innerHTML =
+    `<tr><th>Property</th><th>Value</th></tr>` +
+    propertyLabels.map(([label,key]) => `<tr><td>${label}</td><td>${escapeHTML(c[key])}</td></tr>`).join("") +
+    `<tr><td>Category</td><td>${escapeHTML(c.category)}</td></tr>` +
+    `<tr><td>Description</td><td>${escapeHTML(c.desc)}</td></tr>`;
+  showPage("detail");
+}
+function copySmiles() {
+  navigator.clipboard.writeText(currentCompound.smiles)
+    .then(() => toast("SMILES copied"))
+    .catch(() => toast("Copy not supported in this browser"));
+}
+function csvEscape(v) {
+  return '"' + String(v).replace(/"/g,'""') + '"';
+}
+function downloadCSV(filename, rows) {
+  const csv = rows.map(row => row.map(csvEscape).join(",")).join("\r\n");
+  const blob = new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+function compoundRows(list) {
+  return [["Name","Category","Formula","Molecular weight","LogP","TPSA","HBD","HBA","Rotatable bonds","Rings","SMILES","Description"],
+    ...list.map(c => [c.name,c.category,c.formula,c.mw,c.logp,c.tpsa,c.hbd,c.hba,c.rot,c.rings,c.smiles,c.desc])];
+}
+function downloadCurrent() {
+  downloadCSV(currentCompound.name.toLowerCase().replace(/[^a-z0-9]+/g,"-")+".csv",compoundRows([currentCompound]));
+}
+function downloadComparison() {
+  if (!lastComparison.length) return toast("Compare compounds first");
+  downloadCSV("molecule-comparison.csv",compoundRows(lastComparison));
+}
+function populateComparison() {
+  const opts = compounds.map(c => `<option value="${escapeHTML(c.name)}">${escapeHTML(c.name)}</option>`).join("");
+  document.getElementById("compare-a").innerHTML = opts;
+  document.getElementById("compare-b").innerHTML = opts;
+  document.getElementById("compare-a").value = "Paracetamol (PCM)";
+  document.getElementById("compare-b").value = "Caffeine";
+}
+function compareMolecules() {
+  const names = [document.getElementById("compare-a").value,document.getElementById("compare-b").value];
+  lastComparison = names.map(n => compounds.find(c => c.name === n)).filter(Boolean);
+  const keys = [["Formula","formula"],["Molecular weight (g/mol)","mw"],["LogP","logp"],["TPSA (Å²)","tpsa"],["H-bond donors","hbd"],["H-bond acceptors","hba"],["Rotatable bonds","rot"],["Ring count","rings"]];
+  document.getElementById("compare-output").innerHTML =
+    `<div class="table-wrap"><table><tr><th>Property</th>${lastComparison.map(c=>`<th>${escapeHTML(c.name)}</th>`).join("")}</tr>` +
+    keys.map(([label,key])=>`<tr><td>${label}</td>${lastComparison.map(c=>`<td>${escapeHTML(c[key])}</td>`).join("")}</tr>`).join("") +
+    `</table></div>`;
+}
+function downloadStudentReport() {
+  const report = `MOLECULELAB - STUDENT PROJECT REPORT
+
+Student: ABHAY RAJ
+Course: B.Tech CSE (AI/ML), Section C
+Registration Number: RA2611026050168
+Institution: SRM Institute of Science and Technology, Tiruchirappalli
+
+Project: Interactive Molecular Exploration Laboratory
+Number of compounds in this selected library: ${compounds.length}
+
+Features:
+- Search and filter compounds
+- View molecular structures
+- Explore selected molecular descriptors
+- Compare compounds
+- Export CSV reports
+
+Note: This is an educational selection, not a complete catalogue of all carbon compounds.
+Property values are reference estimates and should be independently verified before formal use.
+`;
+  const blob = new Blob([report],{type:"text/plain;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href=url; a.download="Abhay_Raj_Student_Report.txt"; a.click();
+  URL.revokeObjectURL(url);
+}
+function toast(message) {
+  const el = document.getElementById("toast");
+  el.textContent = message; el.style.display = "block";
+  setTimeout(() => el.style.display = "none",2200);
+}
+document.getElementById("stat-count").textContent = compounds.length;
+document.getElementById("stat-drugs").textContent = compounds.filter(c=>c.category==="Drug").length;
+document.getElementById("stat-carbon").textContent = compounds.filter(c=>c.category==="Carbon compound").length;
+renderFeatured();
+renderLibrary();
+populateComparison();
+compareMolecules();
+</script>
+</body>
+</html>
